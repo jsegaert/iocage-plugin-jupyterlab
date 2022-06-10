@@ -3,7 +3,7 @@ This plugin provides a convenient way to install JupyterLab in a FreeBSD jail us
 
 JupyterLab is the next-generation user interface for Project Jupyter offering all the familiar building blocks of the classic Jupyter Notebook (notebook, terminal, text editor, file browser, rich outputs, etc.) in a flexible and powerful user interface. JupyterLab will eventually replace the classic Jupyter Notebook. 
 
-For more information on the Jupyter Project, see https://jupyter.org/
+For more information on Project Jupyter, see https://jupyter.org/
 
 ## To install this Plugin
 Download the plugin manifest file to your local file system.
