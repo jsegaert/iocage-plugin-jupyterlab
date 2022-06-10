@@ -1,4 +1,4 @@
 {
-    "adminportal": "http://%%IP%%",
-    "docurl": "https://github.com/jsegaert/iocage-plugin-dummy"
+    "adminportal": "http://%%IP%%:8888/lab",
+    "docurl": "https://github.com/jsegaert/iocage-plugin-jupyterlab"
 }
