@@ -4,14 +4,16 @@ USER_NAME=jovyan
 USER_UID=1201
 
 # Tweak installation
-USER_PASS=`pw useradd -n $USER_NAME -u $USER_UID -c JupyterLab -m -s /bin/csh -w random`
-USER_HOME=`eval echo ~$USER_NAME`
-APPL_HASH=`python3.8 -c "from IPython.lib.security import passwd; print(passwd('jupyter'))"`
+USER_PASS=$(pw useradd -n $USER_NAME -u $USER_UID -c JupyterLab -m -s /bin/csh -w random)
+USER_HOME=$(eval echo ~$USER_NAME)
+APPL_HASH=$(python3.8 -c "from IPython.lib.security import passwd; print(passwd('jupyter'))")
 
+su $USER_NAME -c "pip install --user --upgrade jupyterlab"
+su $USER_NAME -c "pip install --user --upgrade ipykernel"
 su $USER_NAME -c "jupyter lab --generate-config"
 su $USER_NAME -c "mkdir -p ~/notebook_dir"
 
-CONFIG_DIR=`su $USER_NAME -c "jupyter --config-dir"`
+CONFIG_DIR=$(su $USER_NAME -c "jupyter --config-dir")
 CONFIG_FILE="$CONFIG_DIR/jupyter_lab_config.py"
 
 sed -i '' "s/^# c.ServerApp.ip.*/c.ServerApp.ip = '*'/" $CONFIG_FILE
