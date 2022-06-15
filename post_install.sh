@@ -8,8 +8,8 @@ USER_PASS=$(pw useradd -n $USER_NAME -u $USER_UID -c JupyterLab -m -s /bin/csh -
 USER_HOME=$(eval echo ~$USER_NAME)
 APPL_HASH=$(python3.8 -c "from IPython.lib.security import passwd; print(passwd('jupyter'))")
 
-su $USER_NAME -c "pip install --user --upgrade jupyterlab"
-su $USER_NAME -c "pip install --user --upgrade ipykernel"
+su $USER_NAME -c "pip install --user --no-warn-script-location --upgrade jupyterlab"
+su $USER_NAME -c "pip install --user --no-warn-script-location --upgrade ipykernel"
 su $USER_NAME -c "jupyter lab --generate-config"
 su $USER_NAME -c "mkdir -p ~/notebook_dir"
 
