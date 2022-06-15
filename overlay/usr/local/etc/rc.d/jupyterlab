@@ -1,0 +1,63 @@
+#!/bin/sh
+
+# PROVIDE: jupyterlab
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+
+# Add the following lines to /etc/rc.conf.local or /etc/rc.conf
+# to enable and/or configure this service:
+#
+# jupyterlab_enable (bool):  Set it to "YES" to enable it.
+#                            Default: "NO"                          
+#
+# jupyterlab_user:        The user account the JupyterLab daemon runs as.
+#                         Default: "jovyan" 
+#
+# jupyterlab_chdir:       Directory to cd to before running ${command}
+#                         The default is "/home/jovyan"
+#
+# jupyterlab_logfile:     The logfile JupyterLab uses.
+#                         Default: "/var/log/jupyterlab"
+#
+# jupyterlab_cmd:         The path to the JupyterLab executable.
+#                         Default: "/usr/local/bin/jupyter lab"
+#
+# jupyterlab_cmdargs:     Additional arguments for /usr/local/bin/jupyter-lab
+#                         Example: "--app-dir=~/myjupyterlabapp" or "--certfile=mycert.pem"
+#                         Default: none
+
+. /etc/rc.subr
+name="jupyterlab"
+rcvar="${name}_enable"
+load_rc_config ${name}
+
+: ${jupyterlab_enable:="NO"}
+: ${jupyterlab_user:="jovyan"}
+: ${jupyterlab_chdir:="/home/${jupyterlab_user}"}
+: ${jupyterlab_logfile:="/var/log/jupyterlab"}
+: ${jupyterlab_cmd:="/usr/local/bin/jupyter lab"}
+
+command="/usr/sbin/daemon"
+command_args="-o ${jupyterlab_logfile} ${jupyterlab_cmd} ${jupyterlab_cmdargs}"
+
+start_precmd="${name}_precmd"
+extra_commands="update"
+update_cmd="${name}_update"
+
+jupyterlab_precmd()
+{
+    export HOME=$(pw usershow ${jupyterlab_user} | awk 'BEGIN {FS = ":"} { print $9 }')
+    export PATH="$PATH:/usr/local/sbin:/usr/local/bin"
+    install -b -o ${jupyterlab_user} /dev/null ${jupyterlab_logfile}
+}
+
+jupyterlab_update()
+{
+     pkg upgrade -y
+     export PATH="$PATH:/usr/local/sbin:/usr/local/bin"
+     su ${jupyterlab_user} -c "pip install --user --no-warn-script-location --upgrade jupyterlab"
+     su ${jupyterlab_user} -c "pip install --user --no-warn-script-location --upgrade ipykernel"
+}
+
+run_rc_command "$1"
+
