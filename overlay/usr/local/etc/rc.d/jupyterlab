@@ -55,7 +55,7 @@ jupyterlab_precmd()
 jupyterlab_stop()
 {
     # Issue control-c twice
-    su ${jupyterlab_user} -c "/usr/local/bin/screen -S jupyterlab.server -X stuff ^c" && return
+    su ${jupyterlab_user} -c "/usr/local/bin/screen -S jupyterlab.server -X stuff ^c" || return
     su ${jupyterlab_user} -c "/usr/local/bin/screen -S jupyterlab.server -X stuff ^c"
 }
 
