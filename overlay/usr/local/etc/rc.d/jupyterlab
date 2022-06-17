@@ -37,10 +37,11 @@ load_rc_config ${name}
 : ${jupyterlab_logfile:="/var/log/jupyterlab"}
 : ${jupyterlab_cmd:="/usr/local/bin/jupyter lab"}
 
-command="/usr/sbin/daemon"
-command_args="-o ${jupyterlab_logfile} ${jupyterlab_cmd} ${jupyterlab_cmdargs}"
+command="/usr/local/bin/screen"
+command_args="-L -Logfile ${jupyterlab_logfile} -d -m -S ${name}.server ${jupyterlab_cmd} ${jupyterlab_cmdargs}"
 
 start_precmd="${name}_precmd"
+stop_cmd="${name}_stop"
 extra_commands="update"
 update_cmd="${name}_update"
 
@@ -48,15 +49,21 @@ jupyterlab_precmd()
 {
     export HOME=$(pw usershow ${jupyterlab_user} | awk 'BEGIN {FS = ":"} { print $9 }')
     export PATH="$PATH:/usr/local/sbin:/usr/local/bin"
-    install -b -o ${jupyterlab_user} /dev/null ${jupyterlab_logfile}
+    install -b -m 0644 -o ${jupyterlab_user} /dev/null ${jupyterlab_logfile}
+}
+
+jupyterlab_stop()
+{
+    # Issue control-c twice
+    su ${jupyterlab_user} -c "/usr/local/bin/screen -S jupyterlab.server -X stuff ^c" && return
+    su ${jupyterlab_user} -c "/usr/local/bin/screen -S jupyterlab.server -X stuff ^c"
 }
 
 jupyterlab_update()
 {
-     pkg upgrade -y
-     export PATH="$PATH:/usr/local/sbin:/usr/local/bin"
-     su ${jupyterlab_user} -c "pip install --user --no-warn-script-location --upgrade jupyterlab"
-     su ${jupyterlab_user} -c "pip install --user --no-warn-script-location --upgrade ipykernel"
+     /usr/sbin/pkg upgrade -y
+     su ${jupyterlab_user} -c "/usr/local/bin/pip install --user --no-warn-script-location --upgrade jupyterlab"
+     su ${jupyterlab_user} -c "/usr/local/bin/pip install --user --no-warn-script-location --upgrade ipykernel"
 }
 
 run_rc_command "$1"
