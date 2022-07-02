@@ -48,6 +48,7 @@ update_cmd="${name}_update"
 jupyterlab_precmd()
 {
     export HOME=$(pw usershow ${jupyterlab_user} | awk 'BEGIN {FS = ":"} { print $9 }')
+    export SHELL=$(pw usershow ${jupyterlab_user} | awk 'BEGIN {FS = ":"} { print $10 }')
     export PATH="$PATH:/usr/local/sbin:/usr/local/bin"
     install -b -m 0644 -o ${jupyterlab_user} /dev/null ${jupyterlab_logfile}
 }
