@@ -7,7 +7,7 @@ WORK_DIR=notebooks
 # Tweak installation
 USER_PASS=$(pw useradd -n $USER_NAME -u $USER_UID -c JupyterLab -m -s /bin/csh -w random)
 USER_HOME=$(eval echo ~$USER_NAME)
-APPL_HASH=$(python3.8 -c "from IPython.lib.security import passwd; print(passwd('jupyter'))")
+APPL_HASH=$(python3.9 -c "from IPython.lib.security import passwd; print(passwd('jupyter'))")
 
 # Update ipykernel - this is a hack to add debugging functionality
 su $USER_NAME -c "pip install --user --no-warn-script-location --upgrade jupyterlab"
